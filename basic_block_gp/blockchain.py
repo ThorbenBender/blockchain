@@ -103,7 +103,7 @@ class Blockchain(object):
         guess_hash = hashlib.sha256(guess).hexdigest()
 
         # return True if the last 4 digits of the hash ar zreos
-        return guess_hash[-6:] == "0000"
+        return guess_hash[-4:] == "0000"
 
     def valid_chain(self, chain):
         """
@@ -156,31 +156,42 @@ def last_proof():
     return jsonify(response), 200
 
 
-@app.route('/mine', methods=['GET'])
+@app.route('/mine', methods=['POST'])
 def mine():
     # We run the proof of work algorithm to get the next proof...
     last_block = blockchain.last_block
     last_proof = last_block['proof']
-    proof = blockchain.proof_of_work(last_proof)
+    # proof = blockchain.proof_of_work(last_proof)
+    result = request.get_json()
+    print(result)
+    # proof = result['proof']
+    # proof = apiRequest['proof']
 
     # We must receive a reward for finding the proof.
     # The sender is "0" to signify that this node has mine a new coin
     # The recipient is the current node, it did the mining!
     # The amount is 1 coin as a reward for mining the next block
-    blockchain.new_transaction(sender="0", recipient=node_identifier, amount=1)
+    # blockchain.new_transaction(sender="0", recipient=node_identifier, amount=1)
     # Forge the new Block by adding it to the chain
-    previous_hash = blockchain.hash(last_block)
-    block = blockchain.new_block(proof, previous_hash)
+    # if blockchain.valid_proof(last_proof, proof) is True:
+    #     previous_hash = blockchain.hash(last_block)
+    #     block = blockchain.new_block(proof, previous_hash)
 
-    # Send a response with the new block
-    response = {
-        'message': "New Block Forged",
-        'index': block['index'],
-        'transactions': block['transactions'],
-        'proof': block['proof'],
-        'previous_hash': block['previous_hash'],
-    }
-    return jsonify(response), 200
+    #     # Send a response with the new block
+    #     response = {
+    #         'message': "New Block Forged",
+    #         'index': block['index'],
+    #         'transactions': block['transactions'],
+    #         'proof': block['proof'],
+    #         'previous_hash': block['previous_hash'],
+    #         'error': None
+    #     }
+    # else:
+    #     response = {
+    #         'error': "Invalid proof"
+    #     }
+    # print(response)
+    return jsonify(result), 200
 
 
 @app.route('/transactions/new', methods=['POST'])
