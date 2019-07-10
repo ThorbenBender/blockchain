@@ -147,6 +147,15 @@ node_identifier = str(uuid4()).replace('-', '')
 blockchain = Blockchain()
 
 
+@app.route('/last_proof', methods=['GET'])
+def last_proof():
+    last_block = blockchain.last_block
+    response = {
+        'last_proof': last_block['proof']
+    }
+    return jsonify(response), 200
+
+
 @app.route('/mine', methods=['GET'])
 def mine():
     # We run the proof of work algorithm to get the next proof...
