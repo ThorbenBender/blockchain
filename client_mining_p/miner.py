@@ -41,12 +41,12 @@ if __name__ == '__main__':
         # TODO: When found, POST it to the server {"proof": new_proof}
         # TODO: If the server responds with 'New Block Forged'
         response = requests.post(
-            'http://localhost:5000/mine', data=json.dumps({'proof': proof}))
+            'http://localhost:5000/mine', json={'proof': proof})
         print(response.json())
-        # if response.json()['error'] is None:
-        #     coins_mined += 1
-        #     print('hello')
-        # # add 1 to the number of coins mined and print it.  Otherwise,
-        # # print the message from the server.
-        # else:
-        #     print(response.json()['error'])
+        if response.json()['error'] is None:
+            coins_mined += 1
+            print('Created the proof')
+        # add 1 to the number of coins mined and print it.  Otherwise,
+        # print the message from the server.
+        else:
+            print(response.json()['error'])

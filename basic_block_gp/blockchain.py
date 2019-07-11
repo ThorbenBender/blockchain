@@ -163,9 +163,7 @@ def mine():
     last_proof = last_block['proof']
     # proof = blockchain.proof_of_work(last_proof)
     result = request.get_json()
-    print(result)
-    # proof = result['proof']
-    # proof = apiRequest['proof']
+    proof = result['proof']
 
     # We must receive a reward for finding the proof.
     # The sender is "0" to signify that this node has mine a new coin
@@ -173,25 +171,25 @@ def mine():
     # The amount is 1 coin as a reward for mining the next block
     # blockchain.new_transaction(sender="0", recipient=node_identifier, amount=1)
     # Forge the new Block by adding it to the chain
-    # if blockchain.valid_proof(last_proof, proof) is True:
-    #     previous_hash = blockchain.hash(last_block)
-    #     block = blockchain.new_block(proof, previous_hash)
+    if blockchain.valid_proof(last_proof, proof) is True:
+        previous_hash = blockchain.hash(last_block)
+        block = blockchain.new_block(proof, previous_hash)
 
-    #     # Send a response with the new block
-    #     response = {
-    #         'message': "New Block Forged",
-    #         'index': block['index'],
-    #         'transactions': block['transactions'],
-    #         'proof': block['proof'],
-    #         'previous_hash': block['previous_hash'],
-    #         'error': None
-    #     }
-    # else:
-    #     response = {
-    #         'error': "Invalid proof"
-    #     }
+        # Send a response with the new block
+        response = {
+            'message': "New Block Forged",
+            'index': block['index'],
+            'transactions': block['transactions'],
+            'proof': block['proof'],
+            'previous_hash': block['previous_hash'],
+            'error': None
+        }
+    else:
+        response = {
+            'error': "Invalid proof"
+        }
     # print(response)
-    return jsonify(result), 200
+    return jsonify(response), 200
 
 
 @app.route('/transactions/new', methods=['POST'])
