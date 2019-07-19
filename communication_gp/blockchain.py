@@ -18,6 +18,17 @@ class Blockchain(object):
 
         self.new_block(previous_hash=1, proof=100)
 
+    # task
+    def genesis_block(self):
+        """
+        Create the genesis block and add it to the chain
+        The genesis block is the anchor of the chain.  It must be the
+        same for all nodes, or their chains will fail consensus.
+        It is normally hard-coded
+        """
+        # fill this in
+        pass
+
     def new_block(self, proof, previous_hash=None):
         """
         Create a new Block in the Blockchain
@@ -32,6 +43,7 @@ class Blockchain(object):
             'timestamp': time(),
             'transactions': self.current_transactions,
             'proof': proof,
+            # TODO remove hash chain
             'previous_hash': previous_hash or self.hash(self.chain[-1]),
         }
 
@@ -40,6 +52,17 @@ class Blockchain(object):
 
         self.chain.append(block)
         return block
+
+    # task
+    def add_block(self, block):
+        """
+        Add a received Block to the end of the Blockchain
+        :param block: <Block> The validated Block sent by another node in the
+        network
+        """
+
+        # Reset the current list of transactions.
+        pass
 
     def new_transaction(self, sender, recipient, amount):
         """
@@ -175,6 +198,15 @@ class Blockchain(object):
 
         return False
 
+    # task
+    def broadcast_new_block(self, block):
+        """
+        Alert neigbors in list of nodes that a new block has been mined
+        :param block: <Block> the block that has been mined and added to the 
+        chain
+        """
+        pass
+
 
 # Instantiate our Node
 app = Flask(__name__)
@@ -208,6 +240,8 @@ def mine():
         previous_hash = blockchain.hash(last_block)
         block = blockchain.new_block(submitted_proof, previous_hash)
 
+        # TODO TASK Broadcast new block
+
         response = {
             'message': "New Block Forged",
             'index': block['index'],
@@ -221,6 +255,20 @@ def mine():
             'message': "Proof was invalid or already submitted."
         }
         return jsonify(response), 200
+
+# TASK
+# Receive a new block from a peer
+
+
+@app.route('/block/new', methods=['POST'])
+def new_block():
+        # Check that the required fields are in the POST'ed data
+
+         # TODO: Verify that the sender is one of our peers
+
+        # Check that the new block index is 1 higher than our last block
+
+        pass
 
 
 @app.route('/transactions/new', methods=['POST'])
